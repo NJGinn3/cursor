@@ -39,6 +39,32 @@ async function main() {
       update: { minPoints: lvl.minPoints, title: lvl.title },
     });
   }
+
+  // Demo users
+  const demoUsers = [
+    { email: 'dom@example.com', username: 'dom', password: 'password123', role: 'DOM' as const },
+    { email: 'sub@example.com', username: 'sub', password: 'password123', role: 'SUB' as const },
+  ];
+
+  for (const du of demoUsers) {
+    const existing = await prisma.user.findUnique({ where: { email: du.email } });
+    if (!existing) {
+      const hashedPassword = await (await import('bcryptjs')).default.hash(du.password, 10);
+      const user = await prisma.user.create({ data: { email: du.email, username: du.username, hashedPassword } });
+      await prisma.profile.create({ data: { userId: user.id, displayName: du.username, role: du.role } });
+
+      // Give some sample ratings
+      const kinks = await prisma.kink.findMany();
+      for (const [i, k] of kinks.entries()) {
+        const value = du.role === 'DOM' ? (i % 3 === 0 ? 'GO' : i % 3 === 1 ? 'MAYBE' : 'NOGO') : (i % 3 === 0 ? 'MAYBE' : i % 3 === 1 ? 'GO' : 'NOGO');
+        await prisma.kinkRating.upsert({
+          where: { userId_kinkId: { userId: user.id, kinkId: k.id } },
+          create: { userId: user.id, kinkId: k.id, value: value as any, intensity: value === 'GO' ? 80 : value === 'MAYBE' ? 50 : 10 },
+          update: { value: value as any },
+        });
+      }
+    }
+  }
 }
 
 main()
