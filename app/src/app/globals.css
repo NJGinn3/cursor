@@ -1,21 +1,54 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Light theme: light violet base with blacks and subtle olive accents */
+  --background: #faf7ff; /* very light violet */
+  --foreground: #0b0b0b; /* rich black for strong contrast */
+
+  /* Brand and accent colors */
+  --primary: #8b5cf6; /* violet-500 */
+  --primary-foreground: #0a0a0a;
+  --olive: #a3b18a; /* subtle desaturated olive */
+  --olive-foreground: #0a0a0a;
+
+  /* UI surfaces */
+  --card: #ffffff;
+  --card-foreground: var(--foreground);
+  --muted: #f1eefc; /* pale violet-tinted surface */
+  --muted-foreground: #2a2a2a;
+  --border: #0a0a0a1a; /* translucent black border */
 }
 
 @theme inline {
+  /* Map CSS vars to Tailwind color tokens */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-olive: var(--olive);
+  --color-olive-foreground: var(--olive-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0a0a0a; /* deep black */
+    --foreground: #ededed; /* near-white text */
+    --card: #111111;
+    --card-foreground: #f5f5f5;
+    --muted: #17141f; /* muted violet-tinted dark */
+    --muted-foreground: #d4d4d4;
+    --border: #ffffff1a;
+    --primary: #a78bfa; /* slightly lighter violet in dark */
+    --olive: #9fb388; /* keep olive subtle */
   }
 }
 
@@ -23,4 +56,21 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Handy component-level utilities leveraging the theme tokens */
+.card {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.cta {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.accent-olive {
+  color: var(--olive);
 }

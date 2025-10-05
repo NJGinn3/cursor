@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,10 +25,26 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <header className="w-full border-b border-[--color-border]">
+          <div className="max-w-5xl mx-auto flex items-center justify-between p-4">
+            <Link href="/" className="text-xl font-semibold" style={{ color: "var(--foreground)" }}>
+              Violet & Olive
+            </Link>
+            <nav className="flex gap-4 text-sm">
+              <Link href="/match" className="hover:underline">Matches</Link>
+              <Link href="/kinks" className="hover:underline">Kinks</Link>
+              <Link href="/pairings" className="hover:underline">Pairings</Link>
+              <Link href="/chat" className="hover:underline">Chat</Link>
+              <Link href="/habits" className="hover:underline">Habits</Link>
+              <Link href="/rewards" className="hover:underline">Rewards</Link>
+              <Link href="/punishments" className="hover:underline">Punishments</Link>
+              <Link href="/competitions" className="hover:underline">Competitions</Link>
+              <Link href="/signin" className="hover:underline">Sign in</Link>
+            </nav>
+          </div>
+        </header>
+        <main className="max-w-5xl mx-auto p-6">{children}</main>
       </body>
     </html>
   );
