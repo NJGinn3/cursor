@@ -1,8 +1,9 @@
 "use client";
 
 import useSWR from "swr";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
+import { useSearchParams } from "next/navigation";
 
 type Message = {
   id: string;
@@ -16,7 +17,20 @@ type Message = {
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
 export default function ChatPage() {
+  return (
+    <Suspense fallback={<p>Loading…</p>}>
+      <ChatContent />
+    </Suspense>
+  );
+}
+
+function ChatContent() {
+  const searchParams = useSearchParams();
   const [pairingId, setPairingId] = useState<string>("");
+  useEffect(() => {
+    const pid = searchParams?.get("pairingId") || "";
+    setPairingId(pid);
+  }, [searchParams]);
   const { data, mutate } = useSWR<{ messages: Message[] }>(
     () => (pairingId ? `/api/chat?pairingId=${pairingId}` : null),
     fetcher,

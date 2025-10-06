@@ -31,12 +31,17 @@ export default function PairingsPage() {
               </div>
               <div className="opacity-70">Status: {p.status}</div>
             </div>
-            {p.status === "PENDING" && (
-              <div className="flex gap-2">
-                <button onClick={() => accept(p.id)} className="cta px-3 py-1 rounded-md text-sm">Accept</button>
-                <button onClick={() => reject(p.id)} className="px-3 py-1 rounded-md text-sm bg-[--color-muted]">Reject</button>
-              </div>
-            )}
+            <div className="flex gap-2">
+              {p.status === "PENDING" && (
+                <>
+                  <button onClick={() => accept(p.id)} className="cta px-3 py-1 rounded-md text-sm">Accept</button>
+                  <button onClick={() => reject(p.id)} className="px-3 py-1 rounded-md text-sm bg-[--color-muted]">Reject</button>
+                </>
+              )}
+              {p.status === "ACCEPTED" && (
+                <a href={`/chat?pairingId=${p.id}`} className="px-3 py-1 rounded-md text-sm bg-[--color-muted]">Start chat</a>
+              )}
+            </div>
           </div>
         ))}
       </div>
