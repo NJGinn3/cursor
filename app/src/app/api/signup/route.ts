@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { PrismaClient, Role } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
+import { randomBytes } from "crypto";
+import { createTransport } from "@/lib/mailer";
 
 const prisma = new PrismaClient();
 
@@ -34,6 +36,22 @@ export async function POST(req: Request) {
       displayName: username,
       role: role as Role,
     },
+  });
+
+  // Create verification token
+  const token = randomBytes(32).toString("hex");
+  const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24);
+  await prisma.emailVerificationToken.create({ data: { userId: user.id, token, expiresAt } });
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL || "http://localhost:3000";
+  const verifyUrl = `${baseUrl}/api/auth/verify?token=${token}`;
+  const transporter = createTransport();
+  await transporter.sendMail({
+    to: email,
+    from: process.env.MAIL_FROM || "no-reply@example.com",
+    subject: "Verify your email",
+    text: `Welcome ${username}! Verify your email: ${verifyUrl}`,
+    html: `<p>Welcome <b>${username}</b>! Click to verify: <a href="${verifyUrl}">Verify Email</a></p>`,
   });
 
   return NextResponse.json({ ok: true });

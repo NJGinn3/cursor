@@ -15,6 +15,7 @@ model User {
   email          String           @unique
   username       String           @unique
   hashedPassword String
+  emailVerified  DateTime?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -29,6 +30,7 @@ model User {
   punishments    Punishment[]
   pointsEvents   PointsEvent[]
   competitions   CompetitionParticipant[]
+  verificationTokens EmailVerificationToken[]
 }
 
 model Profile {
@@ -212,4 +214,14 @@ model CompetitionParticipant {
   score          Int         @default(0)
 
   @@unique([competitionId, userId])
+}
+
+// Email verification tokens
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }

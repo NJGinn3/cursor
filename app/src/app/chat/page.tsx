@@ -1,7 +1,8 @@
 "use client";
 
 import useSWR from "swr";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { io, Socket } from "socket.io-client";
 
 type Message = {
   id: string;
@@ -22,6 +23,25 @@ export default function ChatPage() {
     { refreshInterval: 3000 }
   );
   const [content, setContent] = useState("");
+  const [socket, setSocket] = useState<Socket | null>(null);
+
+  useEffect(() => {
+    const s = io(undefined as unknown as string, { path: "/socket.io" });
+    setSocket(s);
+    return () => {
+      s.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!socket || !pairingId) return;
+    socket.emit("join", pairingId);
+    const onNewMessage = () => mutate();
+    socket.on("message:new", onNewMessage);
+    return () => {
+      socket.off("message:new", onNewMessage);
+    };
+  }, [socket, pairingId, mutate]);
 
   async function send() {
     if (!pairingId || !content) return;
@@ -32,6 +52,7 @@ export default function ChatPage() {
     });
     setContent("");
     mutate();
+    socket?.emit("message:new", { pairingId });
   }
 
   return (

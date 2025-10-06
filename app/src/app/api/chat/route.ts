@@ -1,6 +1,7 @@
 import { getSessionOnServer } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { Server as IOServer } from "socket.io";
 
 const prisma = new PrismaClient();
 
@@ -37,5 +38,13 @@ export async function POST(req: Request) {
   const content: string = body.content;
 
   await prisma.message.create({ data: { pairingId, content, senderId: me.id } });
+  // Emit socket event if server is running
+  try {
+    const g = globalThis as unknown as { io?: IOServer };
+    const io = g.io;
+    if (io) io.to(pairingId).emit("message:new", { pairingId });
+  } catch {
+    // ignore
+  }
   return NextResponse.json({ ok: true });
 }
