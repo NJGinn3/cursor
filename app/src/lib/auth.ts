@@ -4,7 +4,16 @@ import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
-const prisma = new PrismaClient();
+declare global {
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined;
+}
+
+const prisma = globalThis.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalThis.prisma = prisma;
+}
 
 const credentialsSchema = z.object({
   emailOrUsername: z.string().min(1),

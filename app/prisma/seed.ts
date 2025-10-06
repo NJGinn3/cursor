@@ -59,8 +59,8 @@ async function main() {
         const value = du.role === 'DOM' ? (i % 3 === 0 ? 'GO' : i % 3 === 1 ? 'MAYBE' : 'NOGO') : (i % 3 === 0 ? 'MAYBE' : i % 3 === 1 ? 'GO' : 'NOGO');
         await prisma.kinkRating.upsert({
           where: { userId_kinkId: { userId: user.id, kinkId: k.id } },
-          create: { userId: user.id, kinkId: k.id, value: value as any, intensity: value === 'GO' ? 80 : value === 'MAYBE' ? 50 : 10 },
-          update: { value: value as any },
+          create: { userId: user.id, kinkId: k.id, value: value as 'GO' | 'MAYBE' | 'NOGO', intensity: value === 'GO' ? 80 : value === 'MAYBE' ? 50 : 10 },
+          update: { value: value as 'GO' | 'MAYBE' | 'NOGO' },
         });
       }
     }
