@@ -1,0 +1,215 @@
+// Prisma schema for BDSM matching and gamification app
+// SQLite for local dev; can be swapped later
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  username       String           @unique
+  hashedPassword String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  profile        Profile?
+  kinkRatings    KinkRating[]
+  pairingsA      Pairing[]        @relation("PairingA")
+  pairingsB      Pairing[]        @relation("PairingB")
+  messages       Message[]
+  habits         Habit[]
+  habitLogs      HabitLog[]
+  rewards        Reward[]
+  punishments    Punishment[]
+  pointsEvents   PointsEvent[]
+  competitions   CompetitionParticipant[]
+}
+
+model Profile {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  user          User     @relation(fields: [userId], references: [id])
+
+  displayName   String
+  bio           String?
+  role          Role // Dominant, Submissive, Switch
+  age           Int?
+  location      String?
+  avatarUrl     String?
+  theme         String? // JSON string or token name
+
+  // Matching preferences
+  preferredRoles ProfilePreferredRole[]
+  visibility     Boolean @default(true)
+}
+
+enum Role {
+  DOM
+  SUB
+  SWITCH
+}
+
+model Kink {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+  ratings     KinkRating[]
+}
+
+enum KinkRatingValue {
+  GO
+  MAYBE
+  NOGO
+}
+
+model KinkRating {
+  id        String          @id @default(cuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id])
+  kinkId    String
+  kink      Kink            @relation(fields: [kinkId], references: [id])
+  value     KinkRatingValue
+  intensity Int             @default(50) // 0-100 strength/preferences
+  notes     String?
+
+  @@unique([userId, kinkId])
+}
+
+// Join table to represent multiple preferred roles per profile
+model ProfilePreferredRole {
+  id        String  @id @default(cuid())
+  profileId String
+  profile   Profile @relation(fields: [profileId], references: [id])
+  role      Role
+
+  @@unique([profileId, role])
+}
+
+// Pairing between two users with explicit roles
+model Pairing {
+  id           String   @id @default(cuid())
+  createdAt    DateTime @default(now())
+  status       PairingStatus @default(PENDING)
+
+  userAId      String
+  userA        User     @relation("PairingA", fields: [userAId], references: [id])
+  roleA        Role
+
+  userBId      String
+  userB        User     @relation("PairingB", fields: [userBId], references: [id])
+  roleB        Role
+
+  // Optional contract/notes
+  contract     String?
+
+  messages     Message[]
+}
+
+enum PairingStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  ENDED
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  senderId   String
+  sender     User     @relation(fields: [senderId], references: [id])
+
+  pairingId  String
+  pairing    Pairing  @relation(fields: [pairingId], references: [id])
+
+  content    String
+  readAt     DateTime?
+}
+
+// Habits and logs for gamification
+model Habit {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  title         String
+  description   String?
+  cadence       String   // e.g., daily, weekly, custom cron-like
+  pointsOnDone  Int      @default(10)
+  createdAt     DateTime @default(now())
+  archived      Boolean  @default(false)
+
+  logs          HabitLog[]
+}
+
+model HabitLog {
+  id        String   @id @default(cuid())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  doneAt    DateTime @default(now())
+}
+
+model Reward {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  description String?
+  costPoints  Int      @default(100)
+}
+
+model Punishment {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  title       String
+  description String?
+  severity    Int      @default(1) // 1-5 scale
+}
+
+// Points and leveling
+model PointsEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  delta     Int
+  reason    String
+}
+
+model Level {
+  level       Int      @id
+  minPoints   Int
+  title       String
+}
+
+// Community competitions and participation
+model Competition {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  startsAt    DateTime
+  endsAt      DateTime
+  createdAt   DateTime @default(now())
+
+  participants CompetitionParticipant[]
+}
+
+model CompetitionParticipant {
+  id             String   @id @default(cuid())
+  competitionId  String
+  competition    Competition @relation(fields: [competitionId], references: [id])
+  userId         String
+  user           User        @relation(fields: [userId], references: [id])
+  score          Int         @default(0)
+
+  @@unique([competitionId, userId])
+}
