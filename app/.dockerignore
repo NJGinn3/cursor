@@ -1,0 +1,14 @@
+# Dependencies and build outputs
+node_modules
+.next
+
+# VCS
+.git
+.gitignore
+
+# Local files
+npm-debug.log
+.DS_Store
+
+# Prisma local dev DB file (not baked into the image)
+prisma/prisma/dev.db
