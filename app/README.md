@@ -53,9 +53,13 @@ A sophisticated platform for BDSM enthusiasts to connect, explore kinks, and eng
 
 4. **Set up the database**
    ```bash
+   # For development (SQLite)
    npm run db:generate
    npm run db:migrate
    npm run db:seed
+
+   # For production (PostgreSQL) - See Migration Guide
+   npm run db:setup-postgres
    ```
 
 5. **Start the development server**
@@ -64,6 +68,29 @@ A sophisticated platform for BDSM enthusiasts to connect, explore kinks, and eng
    ```
 
 6. **Open [http://localhost:3000](http://localhost:3000)**
+
+## Database Migration
+
+### Migrating from SQLite to PostgreSQL
+
+For production deployment, you'll need to migrate from SQLite to PostgreSQL:
+
+1. **Choose your PostgreSQL provider** (see Environment Variables section)
+2. **Update your environment variables** with the PostgreSQL DATABASE_URL
+3. **Run the migration script**:
+   ```bash
+   npm run db:migrate-to-postgres
+   ```
+4. **Deploy with PostgreSQL** (see Deployment section below)
+
+📖 **[Complete Migration Guide](./MIGRATION_GUIDE.md)** - Detailed step-by-step instructions
+
+### Why PostgreSQL for Production?
+
+- Better performance and concurrency handling
+- Advanced features like JSON fields and complex queries
+- Managed services available (Vercel Postgres, Railway, Supabase, Neon)
+- Easier scaling and backup strategies
 
 ## Deployment
 
@@ -81,19 +108,30 @@ A sophisticated platform for BDSM enthusiasts to connect, explore kinks, and eng
    - Import your GitHub repository
    - Vercel will auto-detect Next.js
 
-3. **Configure Environment Variables**
+3. **Set up PostgreSQL Database**
+   ```bash
+   # Create Vercel Postgres database
+   vercel postgres create
+
+   # Get your database URL from Vercel dashboard
+   # Project > Storage > Postgres > Copy DATABASE_URL
+   ```
+
+4. **Configure Environment Variables**
    - In Vercel dashboard, go to Project Settings > Environment Variables
    - Add the following:
      ```
-     DATABASE_URL=your-production-database-url
+     DATABASE_URL=your-postgresql-connection-string
      NEXTAUTH_URL=https://your-domain.vercel.app
      NEXTAUTH_SECRET=your-generated-secret
      ```
 
-4. **Database Setup**
-   - For production, use PostgreSQL (Vercel Postgres or external)
-   - Update your Prisma schema to use PostgreSQL
-   - Run migrations in production
+5. **Deploy**
+   ```bash
+   vercel --prod
+   ```
+
+   Vercel will automatically run Prisma migrations during deployment.
 
 ### Option 2: Railway
 
@@ -103,14 +141,15 @@ A sophisticated platform for BDSM enthusiasts to connect, explore kinks, and eng
 
 2. **Add PostgreSQL Database**
    - In Railway dashboard, add a PostgreSQL service
-   - Copy the DATABASE_URL from Railway
+   - Copy the DATABASE_URL from Railway dashboard
 
-3. **Set Environment Variables**
+3. **Deploy**
    ```bash
-   DATABASE_URL=postgresql://... (from Railway)
-   NEXTAUTH_URL=https://your-app.railway.app
-   NEXTAUTH_SECRET=your-generated-secret
+   # Railway auto-deploys when you push to Git
+   git push origin main
    ```
+
+   Railway will automatically set the DATABASE_URL environment variable.
 
 ### Option 3: Docker
 
@@ -174,7 +213,14 @@ A sophisticated platform for BDSM enthusiasts to connect, explore kinks, and eng
      postgres_data:
    ```
 
-3. **Deploy**
+3. **Set up PostgreSQL**
+   ```bash
+   # The docker-compose.yml includes PostgreSQL service
+   # Wait for PostgreSQL to be ready, then run:
+   docker-compose exec app npm run db:setup-postgres
+   ```
+
+4. **Deploy**
    ```bash
    docker-compose up -d
    ```

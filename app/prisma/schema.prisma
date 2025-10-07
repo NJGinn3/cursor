@@ -1,12 +1,12 @@
 // Prisma schema for BDSM matching and gamification app
-// SQLite for local dev; can be swapped later
+// PostgreSQL for production; SQLite for local development
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
