@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: violet-olive
+    env: node
+    rootDir: app
+    plan: starter
+    autoDeploy: true
+    healthCheckPath: /
+    buildCommand: npm ci && npx prisma generate && npm run build
+    startCommand: bash -lc "export NEXTAUTH_URL=$RENDER_EXTERNAL_URL; npm run db:deploy && npm run start"
+    disk:
+      name: app-data
+      mountPath: /opt/render/project/src/app/prisma/prisma
+      sizeGB: 1
+    envVars:
+      - key: DATABASE_URL
+        value: file:./prisma/prisma/dev.db
+      - key: NEXTAUTH_SECRET
+        generateValue: true
+      # NEXTAUTH_URL is derived at runtime from RENDER_EXTERNAL_URL
