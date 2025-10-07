@@ -7,7 +7,7 @@ services:
     autoDeploy: true
     healthCheckPath: /
     buildCommand: npm ci && npx prisma generate && npm run build
-    startCommand: bash -lc "export NEXTAUTH_URL=$RENDER_EXTERNAL_URL; npm run db:deploy && npm run start"
+    startCommand: bash -lc "export NEXTAUTH_URL=$RENDER_EXTERNAL_URL; npm run db:deploy && npm run start -- -p $PORT"
     disk:
       name: app-data
       mountPath: /opt/render/project/src/app/prisma/prisma
