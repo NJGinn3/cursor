@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Tiff's Creations — Bespoke Steampunk Hats & More</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#1a1614;
+      --panel:#251e1b;
+      --accent:#c99b4d;
+      --accent-light:#f5d59f;
+      --accent-dark:#8a6a38;
+      --muted:#d4c0b5;
+      --glass:rgba(255,255,255,0.06);
+      --max-width:1100px;
+      --ff-sans:"Inter","Segoe UI",Roboto,Arial,sans-serif;
+    }
+
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family:var(--ff-sans);
+      background: linear-gradient(180deg, #100e0d 0%, var(--bg) 60%);
+      color:#eee;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:flex-start;
+      justify-content:center;
+      padding:40px 20px;
+      min-height:100vh;
+    }
+
+    .site{
+      width:100%;
+      max-width:var(--max-width);
+      backdrop-filter: blur(6px);
+      border-radius:12px;
+      box-shadow:0 10px 40px rgba(2,2,2,0.7);
+      overflow:hidden;
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.2));
+      border:1px solid rgba(255,255,255,0.08);
+      display:flex;
+      flex-direction:column;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      padding:24px 28px;
+      background: linear-gradient(90deg, rgba(0,0,0,0.6), rgba(0,0,0,0.4));
+      border-bottom:2px solid var(--accent);
+      box-shadow:0 4px 15px rgba(2,2,2,0.8);
+    }
+
+    .brand{
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+
+    /* Logo now uses the first attached image */
+    .logo{
+      width:64px;
+      height:64px;
+      border-radius:10px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.6), 0 6px 18px rgba(0,0,0,0.5);
+      border:2px solid var(--accent);
+      background: radial-gradient(circle at 70% 30%, var(--accent-light) 0%, var(--accent-dark) 100%);
+      overflow:hidden;
+      position:relative;
+    }
+    .logo img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      filter: contrast(1.05) saturate(1.05);
+    }
+    .logo::before{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 70% 30%, var(--accent-light) 0%, var(--accent-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: var(--accent);
+    }
+    .logo::after{
+      content: '⚙';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 28px;
+      color: var(--accent-dark);
+      text-shadow: 0 0 4px rgba(0,0,0,0.8);
+    }
+
+    h1{
+      margin:0;
+      font-size:1.6rem;
+      letter-spacing:1.5px;
+      color:var(--accent-light);
+      font-family:'Cinzel', serif;
+      text-shadow:0 0 8px rgba(245,213,159,0.4);
+    }
+
+    header nav{
+      display:flex;
+      gap:14px;
+      align-items:center;
+    }
+
+    .nav-link{
+      color:var(--muted);
+      text-decoration:none;
+      font-size:0.95rem;
+      padding:8px 12px;
+      border-radius:8px;
+      transition:all 0.15s ease;
+      cursor:pointer;
+    }
+    .nav-link:hover{color:var(--accent-light);background:var(--glass);}
+    .nav-link.active-nav{
+      color:var(--accent-light);
+      background:rgba(201,155,77,0.15);
+      border:1px solid rgba(201,155,77,0.3);
+    }
+
+    .steam-toggle button{
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.06);
+      color:var(--accent);
+      padding:8px 14px;
+      border-radius:999px;
+      cursor:pointer;
+      font-weight:600;
+      letter-spacing:0.3px;
+      transition:all .18s ease;
+      white-space:nowrap;
+    }
+    .steam-toggle button:focus-visible{
+      outline:2px solid var(--accent);
+      outline-offset:2px;
+    }
+    .steam-toggle button.active{
+      background: linear-gradient(90deg, rgba(201,155,77,0.2), rgba(201,155,77,0.1));
+      box-shadow:0 6px 20px rgba(201,155,77,0.15), inset 0 -6px 12px rgba(0,0,0,0.5);
+      transform:translateY(-1px);
+      color:var(--accent-light);
+      border-color:rgba(201,155,77,0.4);
+    }
+
+    main{
+      padding:28px;
+      flex-grow:1;
+    }
+
+    /* Page sections now use background styling */
+    .page-content{
+      display:none;
+      position:relative;
+      background:
+        linear-gradient(rgba(18,14,12,0.85), rgba(18,14,12,0.85)),
+        url('background.svg'),
+        radial-gradient(circle at 30% 70%, rgba(201,155,77,0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #1e1a18 0%, #2a211a 50%, #1a1614 100%);
+      background-size: cover, cover, 800px 600px, 100% 100%;
+      background-position: center, center, center, center;
+      background-attachment: fixed, fixed, fixed, fixed;
+      padding:28px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,0.05);
+      min-height:400px;
+    }
+    .page-content.active{display:block;}
+
+    .page-content h2{
+      color:var(--accent-light);
+      font-size:1.8rem;
+      margin-top:0;
+      margin-bottom:20px;
+      border-bottom:2px solid var(--accent);
+      padding-bottom:10px;
+    }
+
+    /* Inline SVG styling & animations */
+    .eyecatch svg, .card .icon svg {
+      fill:none;
+      stroke:var(--accent-light);
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      stroke-width:3;
+    }
+    .eyecatch svg{width:80%;height:80%;stroke-width:2.5;}
+    .card .icon svg{width:50%;height:50%;stroke-width:4;}
+
+    @keyframes gearSpinFast { to { transform: rotate(360deg); } }
+    @keyframes gearSpinSlow { to { transform: rotate(-360deg); } }
+
+    #page-home .eyecatch svg path:nth-child(3){
+      transform-origin:50px 50px;
+      animation:gearSpinFast 12s linear infinite;
+    }
+    #page-home .eyecatch svg path:nth-child(4){
+      transform-origin:50px 50px;
+      animation:gearSpinSlow 20s linear infinite;
+    }
+    .card:nth-child(4) .icon svg line{transform-origin:50px 50px;}
+    .card:nth-child(4) .icon svg line:nth-child(3){animation:gearSpinSlow 10s linear infinite;}
+    .card:nth-child(4) .icon svg line:nth-child(4){animation:gearSpinFast 5s linear infinite;}
+
+    .welcome{
+      display:flex;
+      gap:20px;
+      align-items:center;
+    }
+    .eyecatch{
+      width:120px;height:120px;border-radius:12px;
+      background: radial-gradient(circle at 30% 30%, #3a322e, #1a1614);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--accent);font-weight:800;font-size:28px;
+      border:1px solid rgba(255,255,255,0.06);
+      box-shadow:0 10px 30px rgba(2,2,2,0.6), inset 0 -8px 18px rgba(0,0,0,0.6);
+    }
+    .lead{color:var(--accent-light);margin:0 0 8px 0;font-size:1.25rem;}
+    .sublead{margin:0;color:var(--muted);}
+
+    .creations{
+      margin-top:28px;
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px,1fr));
+      gap:16px;
+    }
+    .card{
+      background: linear-gradient(135deg, rgba(30,26,24,0.9), rgba(15,12,10,0.9));
+      padding:12px;border-radius:10px;display:flex;gap:12px;align-items:center;
+      border:1px solid rgba(201,155,77,0.1);
+      transition:all 0.2s ease;
+    }
+    .card:hover{
+      border-color:var(--accent);
+      box-shadow:0 4px 15px rgba(201,155,77,0.3);
+      transform:translateY(-2px) scale(1.01);
+    }
+    .card .icon{
+      width:56px;height:56px;border-radius:8px;
+      background: linear-gradient(135deg, #302622, #1b1614);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--accent);font-weight:700;font-size:18px;
+      border:1px solid rgba(255,255,255,0.05);
+      box-shadow:inset 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .card .meta{flex:1;}
+    .card .meta h4{margin:0;font-size:0.98rem;color:#fff;}
+    .card .meta p{margin:4px 0 0 0;color:var(--muted);font-size:0.88rem;}
+
+    .product-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap:20px;margin-top:30px;
+    }
+    .product-card{
+      background: rgba(0,0,0,0.3);
+      border-radius:10px;padding:20px;
+      border:1px solid rgba(255,255,255,0.08);
+      transition:all 0.3s ease;
+    }
+    .product-card:hover{
+      background: rgba(201,155,77,0.08);
+      border-color:var(--accent);
+    }
+    .product-card h3{color:var(--accent-light);margin-top:0;}
+    .product-card p{color:var(--muted);}
+
+    .contact-form-container{
+      display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;
+    }
+    .form-group label{
+      display:block;margin-bottom:6px;color:var(--muted);font-size:0.95rem;
+    }
+    .form-group input,.form-group textarea{
+      width:100%;padding:10px 12px;border-radius:6px;
+      border:1px solid rgba(201,155,77,0.2);
+      background: rgba(0,0,0,0.4);color:#fff;font-family:var(--ff-sans);
+    }
+    .form-group textarea{resize:vertical;min-height:120px;}
+    .contact-info{
+      padding:20px;background:rgba(201,155,77,0.08);
+      border-radius:8px;border-left:3px solid var(--accent);height:fit-content;
+    }
+    .contact-info strong{color:var(--accent-light);display:block;margin-top:10px;}
+
+    .submit-btn{
+      background: linear-gradient(180deg, var(--accent-light), var(--accent));
+      color:#111;padding:10px 20px;border:1px solid var(--accent-dark);
+      border-radius:6px;cursor:pointer;font-weight:700;transition:all 0.2s ease;
+      margin-top:15px;box-shadow:0 4px 10px rgba(0,0,0,0.4);
+    }
+    .submit-btn:hover{
+      background: linear-gradient(180deg, #ffeed7, var(--accent-light));
+      transform:translateY(-1px);
+      box-shadow:0 6px 15px rgba(0,0,0,0.6);
+    }
+
+    .steam-wrap{position:relative;flex-grow:1;}
+    canvas#steam{
+      position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+      mix-blend-mode:screen;opacity:0;transition:opacity .6s ease;
+      filter: blur(6px) saturate(1.2);
+    }
+    canvas#steam.active{opacity:1;}
+
+    @media (max-width:980px){
+      main{padding:20px;}
+      .contact-form-container{grid-template-columns:1fr;gap:30px;}
+      .product-grid{grid-template-columns:1fr;}
+    }
+    @media (max-width:520px){
+      body{padding:20px 10px;}
+      header{flex-direction:column;align-items:flex-start;gap:12px;padding:16px;}
+      header nav{flex-wrap:wrap;justify-content:center;width:100%;}
+      .brand{gap:10px;}
+      .eyecatch{width:88px;height:88px;font-size:22px;}
+      main{padding:16px;}
+      .page-content{padding:20px;}
+      .creations{gap:12px;}
+      .card{flex-direction:column;text-align:center;}
+      .card .meta{text-align:center;}
+      .welcome{flex-direction:column;text-align:center;}
+      .steam-toggle{width:100%;justify-content:center;}
+      footer{flex-direction:column;gap:8px;text-align:center;padding:16px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="site" role="main" aria-labelledby="site-title">
+    <header>
+      <div class="brand" id="site-title">
+        <div class="logo" aria-hidden="true">
+          <img src="logo.svg" alt="Tiff's Creations logo">
+        </div>
+        <div>
+          <h1>Tiff's Creations</h1>
+          <div style="font-size:0.88rem;color:var(--muted);margin-top:6px;">Bespoke Steampunk Hats, T-Shirts, Snapbacks & More</div>
+        </div>
+      </div>
+
+      <nav aria-label="Main navigation">
+        <a class="nav-link" href="#home">HOME</a>
+        <a class="nav-link" href="#products">PRODUCTS</a>
+        <a class="nav-link" href="#about">ABOUT</a>
+        <a class="nav-link" href="#contact">CONTACT</a>
+      </nav>
+
+      <div class="steam-toggle" title="Activate Steam Effect">
+        <button id="steamBtn" aria-pressed="false">Activate Steam Effect</button>
+      </div>
+    </header>
+
+    <div class="steam-wrap">
+      <main>
+        <section id="page-home" class="page-content active" aria-labelledby="welcome-title">
+          <div class="welcome">
+            <div class="eyecatch" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="10" />
+                <circle cx="50" cy="50" r="30" />
+                <path d="M50 50 L50 10 M50 50 L75 25 M50 50 L90 50 M50 50 L75 75 M50 50 L50 90 M50 50 L25 75 M50 50 L10 50 M50 50 L25 25" />
+                <path d="M50 10 L55 15 M50 10 L45 15 M90 50 L85 45 M90 50 L85 55 M50 90 L55 85 M50 90 L45 85 M10 50 L15 45 M10 50 L15 55" />
+              </svg>
+            </div>
+            <div>
+              <h2 class="lead" id="welcome-title">Welcome to the Workshop</h2>
+              <p class="sublead">Masterfully crafted Steampunk designs with over 20 years of expertise. Every piece is a unique work of art.</p>
+            </div>
+          </div>
+
+          <div class="creations">
+            <div class="card">
+              <div class="icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                  <rect x="25" y="20" width="50" height="40" rx="5" />
+                  <path d="M15 60 L85 60 L78 68 L22 68 Z" />
+                  <circle cx="50" cy="40" r="8" fill="var(--accent-light)" stroke="var(--bg)" stroke-width="4"/>
+                  <path d="M72 30 L65 37" />
+                  <path d="M72 37 L65 44" />
+                </svg>
+              </div>
+              <div class="meta">
+                <h4>Hats & Headwear</h4>
+                <p>Top hats, bowler caps, and mini hats with custom clockwork and brass.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                  <path d="M20 30 L35 15 H65 L80 30 V85 H20 Z" />
+                  <path d="M20 30 L10 40 L20 45" />
+                  <path d="M80 30 L90 40 L80 45" />
+                  <circle cx="50" cy="65" r="10" stroke-width="2" fill="none" stroke="var(--accent-light)" />
+                  <path d="M50 50 V65 V80" stroke-dasharray="2 2" />
+                </svg>
+              </div>
+              <div class="meta">
+                <h4>Apparel Screen Printing</h4>
+                <p>Durable prints with vintage inks and custom artwork options for tees and jackets.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                  <path d="M20 50 C20 30, 40 20, 50 20 S80 30, 80 50" />
+                  <path d="M10 50 H90" stroke-width="2" />
+                  <circle cx="35" cy="50" r="15" />
+                  <circle cx="65" cy="50" r="15" />
+                  <line x1="20" y1="50" x2="10" y2="40" />
+                  <line x1="80" y1="50" x2="90" y2="40" />
+                </svg>
+              </div>
+              <div class="meta">
+                <h4>Embroidered Snapback Caps</h4>
+                <p>Clean embroidery, bold thread colors, and structured caps for a modern touch.</p>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="icon" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="30" stroke-width="3" />
+                  <circle cx="50" cy="50" r="10" stroke-width="2" />
+                  <line x1="50" y1="50" x2="50" y2="20" stroke-width="3" />
+                  <line x1="50" y1="50" x2="70" y2="70" stroke-width="3" />
+                  <line x1="50" y1="50" x2="20" y2="50" stroke-width="3" />
+                  <path d="M30 30 L70 30" stroke-dasharray="4 4" opacity="0.5"/>
+                  <path d="M30 70 L70 70" stroke-dasharray="4 4" opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="meta">
+                <h4>Accessories & Gear</h4>
+                <p>Custom goggles, belts, cufflinks, and mechanical accent pieces.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="page-products" class="page-content" aria-labelledby="products-title">
+          <h2 id="products-title">Our Catalog of Creations</h2>
+          <p style="color:var(--muted); margin-bottom: 30px;">
+            Explore our signature lines of Steampunk-inspired goods, where Victorian elegance meets industrial grit. Everything is made-to-order.
+          </p>
+
+          <div class="product-grid">
+            <div class="product-card">
+              <h3>The Chronos Collection (Hats)</h3>
+              <p>Our flagship line of hand-shaped top hats and bowlers. Each piece features genuine clockwork mechanisms, riveted leather straps, and aged brass filigree. Perfect for conventions and formal events.</p>
+              <p style="color:var(--accent-light); font-weight:600;">Starting at $185</p>
+            </div>
+            <div class="product-card">
+              <h3>Submersible Tees (Apparel)</h3>
+              <p>Screen-printed t-shirts featuring original designs of deep-sea diving bells, airships, and Victorian machinery. Printed with distressed, water-based inks for a genuine vintage feel.</p>
+              <p style="color:var(--accent-light); font-weight:600;">Custom orders welcome</p>
+            </div>
+            <div class="product-card">
+              <h3>The Airshipman (Gear)</h3>
+              <p>Bespoke leather accessories including utility belts, gauntlets, and wrist cuffs. We utilize authentic buckles and antique hardware sourced from historical salvage.</p>
+              <p style="color:var(--accent-light); font-weight:600;">Inquire for design consultation</p>
+            </div>
+            <div class="product-card">
+              <h3>Custom Headwear Consult</h3>
+              <p>Have a vision? We offer full design consultation to bring your unique headpiece ideas to life. From specific materials to unique gear trains, we craft your dream creation.</p>
+              <p style="color:#fff; font-weight:600;">Contact us to start</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="page-about" class="page-content" aria-labelledby="about-title">
+          <h2 id="about-title">The Story Behind the Gears</h2>
+          <p style="color:var(--muted); margin-bottom:20px;">
+            <strong style="color:var(--accent-light);">Tiff's Creations</strong> began in a small garage over two decades ago with a passion for intricate mechanics and the romantic era of steam power. Tiff, the lead artisan, believes that clothing and accessories should tell a story—a story of innovation, adventure, and timeless elegance.
+          </p>
+          <p style="color:var(--muted); line-height:1.6;">
+            We specialize in blending the past and future, meticulously sourcing components like antique watch parts, copper piping, and hand-stitched leathers. Every stitch, rivet, and gear placement is intentional, designed not just for looks, but for durability and artistic integrity. Our commitment to craftsmanship has made us a recognized name in the global Steampunk community. When you purchase a piece from us, you're not just getting an item; you're inheriting a fragment of a beautiful, impossible future.
+          </p>
+          <div style="margin-top:30px; padding:15px; border-left:3px solid var(--accent); background: rgba(0,0,0,0.2);">
+            <p style="margin:0; color:#fff; font-style:italic;">
+              "My goal is to create objects that look like they could power a small village, yet feel comfortable enough to wear to tea." - Tiff
+            </p>
+          </div>
+        </section>
+
+        <section id="page-contact" class="page-content" aria-labelledby="contact-title">
+          <h2 id="contact-title">Forge Your Bespoke Order</h2>
+          <p style="color:var(--muted);">Use the telegraph form below to send us your query, or connect directly via our contact details.</p>
+
+          <div class="contact-form-container">
+            <div>
+              <form onsubmit="return false;">
+                <div class="form-group" style="margin-bottom:15px;">
+                  <label for="name">Your Name (Required)</label>
+                  <input type="text" id="name" required placeholder="Captain Nemo">
+                </div>
+                <div class="form-group" style="margin-bottom:15px;">
+                  <label for="email">Return Signal (Email)</label>
+                  <input type="email" id="email" required placeholder="contact@example.com">
+                </div>
+                <div class="form-group" style="margin-bottom:15px;">
+                  <label for="subject">Subject of Transmission</label>
+                  <input type="text" id="subject" placeholder="Custom Hat Inquiry">
+                </div>
+                <div class="form-group" style="margin-bottom:20px;">
+                  <label for="message">Your Full Message / Design Brief</label>
+                  <textarea id="message" required placeholder="I am looking for a black velvet top hat with working pressure gauges and copper wiring..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+              </form>
+            </div>
+
+            <div class="contact-info">
+              <h3 style="margin-top:0; color:var(--accent-light);">Direct Contact Coordinates</h3>
+              <p style="color:var(--muted);">Reach out to the workshop directly during standard operating hours (GMT-6).</p>
+              <p style="margin:0; color:#fff;">
+                Email for General Inquiries:
+                <strong>info@tiffscreations.com</strong>
+              </p>
+              <p style="margin:15px 0 0 0; color:#fff;">
+                Commission Line (Text Only):
+                <strong>+1 (555) 867-5309</strong>
+              </p>
+              <p style="margin:15px 0 0 0; color:#fff;">
+                Workshop Address (By Appointment):
+                <strong>1888 Gearwheel Alley, Brass City, CA 90210</strong>
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <canvas id="steam" aria-hidden="true"></canvas>
+    </div>
+
+    <footer>
+      <div>© 2025 Tiff's Creations. All Rights Reserved.</div>
+      <div style="color:var(--muted);font-size:0.9rem;">Crafted with brass and imagination</div>
+    </footer>
+  </div>
+
+  <script>
+    function navigateTo(hash){
+      const rawHash=(hash.replace('#','')||'home');
+      const targetId='page-'+rawHash;
+      const allPages=document.querySelectorAll('.page-content');
+      const targetPage=document.getElementById(targetId);
+      allPages.forEach(p=>p.classList.remove('active'));
+      if(targetPage){targetPage.classList.add('active');}
+      else{document.getElementById('page-home').classList.add('active');}
+      const targetLinkHash='#'+rawHash;
+      document.querySelectorAll('.nav-link').forEach(link=>{
+        link.classList.remove('active-nav');
+        if(link.getAttribute('href')===targetLinkHash){
+          link.classList.add('active-nav');
+        }
+      });
+      if(window.location.hash!==targetLinkHash){
+        history.pushState(null,'',targetLinkHash);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{
+      navigateTo(window.location.hash||'#home');
+      document.querySelectorAll('.nav-link').forEach(link=>{
+        link.addEventListener('click',function(e){
+          e.preventDefault();
+          navigateTo(this.getAttribute('href'));
+        });
+      });
+      window.addEventListener('popstate',()=>{
+        navigateTo(window.location.hash||'#home');
+      });
+
+      // Handle logo image loading error
+      const logoImg = document.querySelector('.logo img');
+      if (logoImg) {
+        logoImg.addEventListener('error', function() {
+          this.style.display = 'none';
+          const logo = this.parentElement;
+          logo.style.display = 'flex';
+          logo.style.alignItems = 'center';
+          logo.style.justifyContent = 'center';
+          logo.style.fontSize = '28px';
+          logo.style.color = 'var(--accent)';
+          logo.innerHTML = '⚙️';
+        });
+      }
+    });
+
+    (function(){
+      const btn=document.getElementById('steamBtn');
+      const canvas=document.getElementById('steam');
+      const ctx=canvas.getContext('2d');
+      let w=0,h=0,particles=[],raf=null,active=false;
+
+      function resize(){
+        w=canvas.width=canvas.offsetWidth;
+        h=canvas.height=canvas.offsetHeight;
+        if(active){
+          const area=w*h;
+          const count=Math.min(160,Math.max(30,Math.floor(area/9000)));
+          initParticles(count);
+        }
+      }
+      window.addEventListener('resize',resize);
+      resize();
+
+      function rand(min,max){return Math.random()*(max-min)+min;}
+
+      class P{
+        constructor(){this.reset(true);}
+        reset(initial){
+          this.x=rand(0,w);
+          this.y=h+rand(10,200);
+          this.vx=rand(-0.15,0.15);
+          this.vy=rand(-0.2,-0.7);
+          this.alpha=initial?rand(0.03,0.08):0.03;
+          this.size=rand(50,150);
+          this.life=rand(8,20);
+          this.age=0;
+          this.sway=rand(0.002,0.009);
+          this.phase=rand(0,Math.PI*2);
+        }
+        step(dt){
+          this.x+=this.vx*dt*60;
+          this.y+=this.vy*dt*60+Math.sin((this.phase+=this.sway)+this.age*0.02)*0.2;
+          this.age+=dt;
+          this.alpha+=0.0008*dt;
+          if(this.age>this.life||this.y+this.size<-50||this.alpha>0.25)this.reset();
+        }
+        draw(ctx){
+          const g=ctx.createRadialGradient(this.x,this.y,this.size*0.1,this.x,this.y,this.size);
+          g.addColorStop(0,'rgba(255,240,210,'+(this.alpha*0.9)+')');
+          g.addColorStop(0.45,'rgba(255,240,210,'+(this.alpha*0.45)+')');
+          g.addColorStop(1,'rgba(255,240,210,0)');
+          ctx.globalCompositeOperation='lighter';
+          ctx.fillStyle=g;
+          ctx.beginPath();
+          ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+          ctx.fill();
+        }
+      }
+
+      function initParticles(count){
+        particles=[];
+        for(let i=0;i<count;i++)particles.push(new P());
+      }
+
+      function animate(t){
+        const now=t/1000;
+        if(!animate.last)animate.last=now;
+        const dt=Math.min(0.04,now-animate.last);
+        animate.last=now;
+
+        ctx.clearRect(0,0,w,h);
+        ctx.save();
+        const vign=ctx.createLinearGradient(0,0,0,h);
+        vign.addColorStop(0,'rgba(255,255,255,0.02)');
+        vign.addColorStop(1,'rgba(0,0,0,0.02)');
+        ctx.fillStyle=vign;
+        ctx.fillRect(0,0,w,h);
+
+        for(const p of particles){p.step(dt);p.draw(ctx);}
+        ctx.restore();
+        raf=requestAnimationFrame(animate);
+      }
+
+      function start(){
+        if(active)return;
+        active=true;
+        canvas.classList.add('active');
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed','true');
+        const area=w*h;
+        const count=Math.min(160,Math.max(30,Math.floor(area/9000)));
+        initParticles(count);
+        if(!raf)raf=requestAnimationFrame(animate);
+      }
+
+      function stop(){
+        if(!active)return;
+        active=false;
+        canvas.classList.remove('active');
+        btn.classList.remove('active');
+        btn.setAttribute('aria-pressed','false');
+        cancelAnimationFrame(raf);raf=null;
+        ctx.clearRect(0,0,w,h);
+      }
+
+      btn.addEventListener('click',function(){ if(active)stop(); else start(); });
+      btn.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){e.preventDefault();btn.click();}
+      });
+
+      const ro=new ResizeObserver(resize);
+      ro.observe(document.querySelector('.site'));
+    })();
+  </script>
+</body>
+</html>
